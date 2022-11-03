@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="https://smtpjs.com/v3/smtp.js" defer></script>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<title>Appointment</title>
 </head>
@@ -77,20 +76,20 @@
 			const phonenumber = document.getElementById('phonenumber').value;
 			const email = document.getElementById('email').value;
 			const symptoms = document.getElementById('symptoms').value;
-			console.log(firstname, lastname, phonenumber, email, symptoms)
-			Email.send({
-				Host: "smtp.gmail.com",
-				Username: "2020ce52f@sigce.edu.in",
-				Password: "zhfkxljmxsjpbpbi",
-				To: email,
-				From: "2020CE52F@sigce.edu.in",
-				Subject: "This is the subject",
-				Body: "And this is the body"
-			}).then(
-				message => {
-					console.log(message)
-					form.reset();
-				});
+
+			fetch('https://miniproject-backend.vercel.app/send', {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({name: firstname, lastname: lastname, email, symptoms, phonenumber}) 
+			} )
+			.then(() => {
+				alert("Appointment booked successfully")
+			})
+			.catch((err) => {
+				alert(err.message)
+			})
 		}
 	</script>
 </body>
