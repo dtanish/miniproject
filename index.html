@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://smtpjs.com/v3/smtp.js" defer></script>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<title>Appointment</title>
+</head>
+
+<body class="h-screen w-screen flex items-center justify-center flex-col" style="background-color: rgba(15,23,42);" onload="handleLoading()">
+	<h1 id="doctorElem" class="text-white font-bold text-3xl mb-20">Loading...</h1>
+	<form class="w-8/12" id="form">
+		<div class="grid md:grid-cols-2 md:gap-6">
+			<div class="relative z-0 mb-6 w-full group">
+				<input type="text" name="firstname" id="firstname"
+					class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+					placeholder=" " required />
+				<label for="firstname"
+					class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First
+					name</label>
+			</div>
+			<div class="relative z-0 mb-6 w-full group">
+				<input type="text" name="lastname" id="lastname"
+					class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+					placeholder=" " required />
+				<label for="lastname"
+					class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last
+					name</label>
+			</div>
+		</div>
+		<div class="grid md:grid-cols-2 md:gap-6">
+			<div class="relative z-0 mb-6 w-full group">
+				<input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phonenumber" id="phonenumber"
+					class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+					placeholder=" " required />
+				<label for="phonenumber"
+					class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Phone
+					number (123-456-7890)</label>
+			</div>
+			<div class="relative z-0 mb-6 w-full group">
+				<input type="text" name="email" id="email"
+					class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+					placeholder=" " required />
+				<label for="email"
+					class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email
+					address</label>
+			</div>
+		</div>
+		<div class="relative z-0 mb-6 w-full group">
+			<input type="text" name="symptoms" id="symptoms"
+				class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+				placeholder=" " required />
+			<label for="symptoms"
+				class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Symptoms</label>
+		</div>
+		<button type="button" onclick="handleSubmit()"
+			class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+	</form>
+	<script>
+		let doctorName = "";
+		let doctorLocation = ""
+		const form = document.getElementById('form');
+		const handleLoading = () => {
+			const doctorElem = document.getElementById('doctorElem');
+			const paramsString = window.location.href.split('?')[1]
+			const searchParams = new URLSearchParams(paramsString);
+			doctorName = searchParams.get('name')
+			doctorLocation = searchParams.get('location')
+			doctorElem.innerHTML = `${doctorName} (${doctorLocation})`;
+		}
+		const handleSubmit = () => {
+			const firstname = document.getElementById('firstname').value;
+			const lastname = document.getElementById('lastname').value;
+			const phonenumber = document.getElementById('phonenumber').value;
+			const email = document.getElementById('email').value;
+			const symptoms = document.getElementById('symptoms').value;
+			console.log(firstname, lastname, phonenumber, email, symptoms)
+			Email.send({
+				Host: "smtp.elasticemail.com",
+				Username: "2020ce52f@sigce.edu.in",
+				Password: "zhfkxljmxsjpbpbi",
+				To: email,
+				From: "2020CE52F@sigce.edu.in",
+				Subject: "This is the subject",
+				Body: "And this is the body"
+			}).then(
+				message => {
+					console.log(message)
+					form.reset();
+				});
+		}
+	</script>
+</body>
+
+</html>
